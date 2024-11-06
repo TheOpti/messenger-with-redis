@@ -47,7 +47,7 @@ export const Login = () => {
 
   return (
     <div className="h-screen flex items-center justify-center">
-      <Card className="mx-auto max-w-sm self-center">
+      <Card className="mx-auto max-w-sm self-center w-96">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
             Login
