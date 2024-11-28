@@ -38,11 +38,33 @@ export const Login = () => {
     resolver: zodResolver(loginSchema),
     defaultValues: {
       username: "",
+      password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
     console.log(values);
+
+    try {
+      const res = await fetch("http://localhost:3000/auth/login", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (!res || !res.ok || res.status >= 400) {
+        console.debug("There was a problem with the response");
+        return;
+      }
+
+      console.debug("Everything was fine.");
+      form.reset();
+    } catch (e) {
+      console.debug("There was an error during the request: ", e);
+    }
   }
 
   return (
