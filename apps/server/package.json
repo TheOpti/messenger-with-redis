@@ -1,12 +1,13 @@
 {
   "name": "server",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "ts-node src/index.ts"
   },
   "author": "",
   "license": "ISC",
@@ -15,9 +16,11 @@
     "@types/node": "^22.7.6",
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
     "typescript": "^5.6.3"
   },
   "dependencies": {
+    "@repo/shared": "*",
     "cors": "^2.8.5",
     "express": "^5.0.1",
     "helmet": "^8.0.0",

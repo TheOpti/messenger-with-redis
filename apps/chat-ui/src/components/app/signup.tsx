@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { signupSchema } from "@repo/shared/schema";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
@@ -19,26 +20,6 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-
-const signupSchema = z
-  .object({
-    username: z
-      .string({ required_error: "Username is required" })
-      .min(3, { message: "Username must be at least 3 characters long" })
-      .max(20, { message: "Username must be 20 characters or less" }),
-    password: z
-      .string({ required_error: "Password is required" })
-      .min(6, { message: "Password must be at least 6 characters long" })
-      .max(20, { message: "Password must be 20 characters or less" }),
-    passwordRepeated: z
-      .string({ required_error: "Password is required" })
-      .min(6, { message: "Password must be at least 6 characters long" })
-      .max(20, { message: "Password must be 20 characters or less" }),
-  })
-  .refine((data) => data.password === data.passwordRepeated, {
-    message: "Passwords don't match",
-    path: ["passwordRepeated"],
-  });
 
 export const Signup = () => {
   const navigate = useNavigate();
