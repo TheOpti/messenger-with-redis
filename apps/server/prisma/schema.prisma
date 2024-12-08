@@ -11,6 +11,5 @@ datasource db {
 model User {
   id       Int    @id @default(autoincrement())
   username String @unique @db.VarChar(20)
-  passhash String @db.VarChar(20)
-  email    String @unique
+  passhash String @db.VarChar(60)
 }

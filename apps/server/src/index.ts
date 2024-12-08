@@ -1,22 +1,11 @@
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "@prisma/client";
 import cors from "cors";
 import express from "express";
 import helmet from "helmet";
 import http from "http";
-import pg from "pg";
 import { Server } from "socket.io";
 
+import { prisma } from "./prisma";
 import router from "./routers/authRouter";
-
-const connectionString = `${process.env.DATABASE_URL}`;
-
-const pool = new pg.Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({
-  adapter,
-  log: ["query", "info", "warn", "error"],
-});
 
 const app = express();
 const port = process.env.PORT || 3000;
