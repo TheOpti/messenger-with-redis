@@ -13,7 +13,10 @@ const connectionString = `${process.env.DATABASE_URL}`;
 
 const pool = new pg.Pool({ connectionString });
 const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient({
+  adapter,
+  log: ["query", "info", "warn", "error"],
+});
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -40,6 +43,24 @@ io.on("connect", (socket) => {});
 
 app.listen(port, async () => {
   console.log(`Server is running on http://localhost:${port}`);
-  const result = await prisma.$connect();
-  console.log("Result: ", result);
+
+  try {
+    await prisma.$connect();
+    console.log("Database connection successful");
+  } catch (error) {
+    console.error("Error connecting to the database:", error);
+    process.exit(1);
+  }
+});
+
+process.on("SIGINT", async () => {
+  await prisma.$disconnect();
+  console.log("Database connection closed");
+  process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+  await prisma.$disconnect();
+  console.log("Database connection closed");
+  process.exit(0);
 });
