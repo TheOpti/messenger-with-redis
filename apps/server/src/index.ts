@@ -1,5 +1,6 @@
 import cors from "cors";
 import express from "express";
+import session from "express-session";
 import helmet from "helmet";
 import http from "http";
 import { Server } from "socket.io";
@@ -9,11 +10,12 @@ import router from "./routers/authRouter";
 
 const app = express();
 const port = process.env.PORT || 3000;
+const sessionSecret = process.env.COOKIE_SECRET || "TopSecret";
 
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "http://localhost:5176",
     credentials: true,
   },
 });
@@ -21,11 +23,24 @@ const io = new Server(server, {
 app.use(helmet());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "http://localhost:5176",
     credentials: true,
   })
 );
 app.use(express.json());
+app.use(
+  session({
+    secret: sessionSecret,
+    name: "sid",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.ENVIRONMENT === "prod",
+      httpOnly: true,
+      sameSite: process.env.ENVIRONMENT === "prod" ? "none" : "lax",
+    },
+  })
+);
 app.use("/auth", router);
 
 io.on("connect", (socket) => {});

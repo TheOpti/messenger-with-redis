@@ -7,6 +7,7 @@ export const Views = () => {
     <Routes>
       <Route path="/" element={<Login />} />
       <Route path="/register" element={<Signup />} />
+      <Route path="/home" element={<div>Hello, welcome home</div>} />
       <Route path="*" element={<Login />} />
     </Routes>
   );

@@ -7,13 +7,42 @@ import { prisma } from "../prisma";
 
 const router = express.Router();
 
-router.post("/login", (req, res) => {
+router.post("/login", async (req, res) => {
   try {
-    const result = loginSchema.parse(req.body);
+    const { username, password } = loginSchema.parse(req.body);
 
-    res.status(200).json({
-      message: "Login successful",
-      username: result.username,
+    const user = await prisma.user.findUnique({
+      where: { username },
+    });
+
+    console.debug("!!! user ", user);
+
+    if (!user) {
+      res.status(404).json({
+        message: "Wrong username or password.",
+      });
+
+      return;
+    }
+
+    const isSamePassword = await bcryptjs.compare(password, user.passhash);
+
+    if (isSamePassword) {
+      req.session.user = {
+        username: req.body.username,
+        id: user.id,
+      };
+
+      res.status(200).json({
+        message: "Login successful",
+        username,
+      });
+
+      return;
+    }
+
+    res.status(404).json({
+      message: "Wrong username or password.",
     });
   } catch (err) {
     if (err instanceof z.ZodError) {
@@ -46,9 +75,14 @@ router.post("/signup", async (req, res) => {
     }
 
     const passhash = await bcryptjs.hash(password, 10);
-    await prisma.user.create({
+    const createResult = await prisma.user.create({
       data: { username, passhash },
     });
+
+    req.session.user = {
+      username: req.body.username,
+      id: createResult.id,
+    };
 
     res.status(200).json({
       message: "Account created successfully",

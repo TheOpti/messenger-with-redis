@@ -33,8 +33,6 @@ export const Login = () => {
   });
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
-    console.log(values);
-
     try {
       const res = await fetch("http://localhost:3000/auth/login", {
         method: "POST",
@@ -46,12 +44,20 @@ export const Login = () => {
       });
 
       if (!res || !res.ok || res.status >= 400) {
+        const parsedResp = await res.json();
         console.debug("There was a problem with the response");
+        form.setError(
+          "password",
+          { message: parsedResp.message },
+          { shouldFocus: true }
+        );
+
         return;
       }
 
       console.debug("Everything was fine.");
       form.reset();
+      navigate("/home");
     } catch (e) {
       console.debug("There was an error during the request: ", e);
     }
