@@ -15,7 +15,7 @@ const sessionSecret = process.env.COOKIE_SECRET || "TopSecret";
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5176",
+    origin: "http://localhost:5173",
     credentials: true,
   },
 });
@@ -23,7 +23,7 @@ const io = new Server(server, {
 app.use(helmet());
 app.use(
   cors({
-    origin: "http://localhost:5176",
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );

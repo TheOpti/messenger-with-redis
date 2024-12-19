@@ -5,12 +5,15 @@ import App from "./App.tsx";
 
 import { BrowserRouter } from "react-router-dom";
 import "./index.css";
+import { UserProvider } from "./providers/UserProvider.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
       <ThemeProvider storageKey="ui-theme">
-        <App />
+        <UserProvider>
+          <App />
+        </UserProvider>
       </ThemeProvider>
     </BrowserRouter>
   </StrictMode>

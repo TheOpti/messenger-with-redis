@@ -7,8 +7,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { UserContext } from "@/providers/UserProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@repo/shared/schema";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
@@ -23,6 +25,7 @@ import {
 
 export const Login = () => {
   const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -57,6 +60,10 @@ export const Login = () => {
 
       console.debug("Everything was fine.");
       form.reset();
+
+      const parsedResp = await res.json();
+      setUser({ ...parsedResp });
+
       navigate("/home");
     } catch (e) {
       console.debug("There was an error during the request: ", e);

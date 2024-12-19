@@ -7,8 +7,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { UserContext } from "@/providers/UserProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema } from "@repo/shared/schema";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
@@ -23,6 +25,7 @@ import {
 
 export const Signup = () => {
   const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);
 
   const form = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
@@ -34,8 +37,6 @@ export const Signup = () => {
   });
 
   async function onSubmit(values: z.infer<typeof signupSchema>) {
-    console.log(values);
-
     try {
       const res = await fetch("http://localhost:3000/auth/register", {
         method: "POST",
@@ -61,6 +62,7 @@ export const Signup = () => {
       console.debug("Everything was fine.");
       form.reset();
       navigate("/home");
+      setUser({});
     } catch (e) {
       console.debug("There was an error during the request: ", e);
     }

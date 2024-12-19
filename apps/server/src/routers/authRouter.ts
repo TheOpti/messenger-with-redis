@@ -7,57 +7,67 @@ import { prisma } from "../prisma";
 
 const router = express.Router();
 
-router.post("/login", async (req, res) => {
-  try {
-    const { username, password } = loginSchema.parse(req.body);
+router
+  .route("/login")
+  .get(async (req, res) => {
+    if (req.session.user?.username) {
+      res.json({ loggedIn: true, username: req.session.user.username });
+      return;
+    }
 
-    const user = await prisma.user.findUnique({
-      where: { username },
-    });
+    res.json({ loggedIn: false });
+  })
+  .post(async (req, res) => {
+    try {
+      const { username, password } = loginSchema.parse(req.body);
 
-    console.debug("!!! user ", user);
+      const user = await prisma.user.findUnique({
+        where: { username },
+      });
 
-    if (!user) {
+      if (!user) {
+        res.status(404).json({
+          loggedIn: false,
+          message: "Wrong username or password.",
+        });
+
+        return;
+      }
+
+      const isSamePassword = await bcryptjs.compare(password, user.passhash);
+
+      if (isSamePassword) {
+        req.session.user = {
+          username: req.body.username,
+          id: user.id,
+        };
+
+        res.status(200).json({
+          loggedIn: true,
+          username: req.body.username,
+        });
+
+        return;
+      }
+
       res.status(404).json({
+        loggedIn: false,
         message: "Wrong username or password.",
       });
-
-      return;
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        res.status(400).json({
+          message: "Validation error",
+          errors: err.errors.map((validationError) => ({
+            field: validationError.path[0],
+            message: validationError.message,
+          })),
+        });
+      }
     }
+  });
 
-    const isSamePassword = await bcryptjs.compare(password, user.passhash);
-
-    if (isSamePassword) {
-      req.session.user = {
-        username: req.body.username,
-        id: user.id,
-      };
-
-      res.status(200).json({
-        message: "Login successful",
-        username,
-      });
-
-      return;
-    }
-
-    res.status(404).json({
-      message: "Wrong username or password.",
-    });
-  } catch (err) {
-    if (err instanceof z.ZodError) {
-      res.status(400).json({
-        message: "Validation error",
-        errors: err.errors.map((validationError) => ({
-          field: validationError.path[0],
-          message: validationError.message,
-        })),
-      });
-    }
-  }
-});
-
-router.post("/signup", async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
     const result = signupSchema.parse(req.body);
     const { username, password } = result;
@@ -85,8 +95,8 @@ router.post("/signup", async (req, res) => {
     };
 
     res.status(200).json({
-      message: "Account created successfully",
-      username: result.username,
+      loggedIn: true,
+      username: req.body.username,
     });
   } catch (err) {
     if (err instanceof z.ZodError) {
