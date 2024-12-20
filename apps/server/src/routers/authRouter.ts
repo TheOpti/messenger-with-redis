@@ -115,4 +115,15 @@ router.post("/register", async (req, res) => {
   }
 });
 
+router.get("/logout", async (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.send("Error destroying session");
+    }
+
+    res.clearCookie("sid");
+    res.send("Logged out!");
+  });
+});
+
 export default router;

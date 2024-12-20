@@ -10,9 +10,10 @@ import { useNavigate } from "react-router-dom";
 
 export const UserContext = createContext<{
   user: { loggedIn: boolean };
-  setUser?: Dispatch<SetStateAction<{ loggedIn: boolean }>>;
+  setUser: Dispatch<SetStateAction<{ loggedIn: boolean }>>;
 }>({
   user: { loggedIn: false },
+  setUser: () => {},
 });
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {

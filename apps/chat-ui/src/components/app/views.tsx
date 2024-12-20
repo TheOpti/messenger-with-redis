@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import { Home } from "./home";
 import { Login } from "./login";
 import { PrivateRoutes } from "./privateRoutes";
 import { Signup } from "./signup";
@@ -9,7 +10,7 @@ export const Views = () => {
       <Route path="/" element={<Login />} />
       <Route path="/register" element={<Signup />} />
       <Route element={<PrivateRoutes />}>
-        <Route path="/home" element={<div>Hello, welcome home</div>} />
+        <Route path="/home" element={<Home />} />
       </Route>
       <Route path="*" element={<Login />} />
     </Routes>
