@@ -50,8 +50,9 @@ export const Signup = () => {
       if (!res || !res.ok || res.status >= 400) {
         const parsedResp = await res.json();
         console.debug("There was a problem with the response");
+        console.debug(parsedResp);
         form.setError(
-          "password",
+          "username",
           { message: parsedResp.message },
           { shouldFocus: true }
         );
@@ -62,7 +63,7 @@ export const Signup = () => {
       console.debug("Everything was fine.");
       form.reset();
       navigate("/home");
-      setUser({});
+      setUser({ loggedIn: true });
     } catch (e) {
       console.debug("There was an error during the request: ", e);
     }
