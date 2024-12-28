@@ -1,12 +1,21 @@
+import { RedisStore } from "connect-redis";
 import cors from "cors";
 import express from "express";
 import session from "express-session";
 import helmet from "helmet";
 import http from "http";
+import { Redis } from "ioredis";
 import { Server } from "socket.io";
 
 import { prisma } from "./prisma";
 import router from "./routers/authRouter";
+
+const redis = new Redis();
+
+const redisStore = new RedisStore({
+  client: redis,
+  prefix: "myapp:",
+});
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -32,6 +41,7 @@ app.use(
   session({
     secret: sessionSecret,
     name: "sid",
+    store: redisStore,
     resave: false,
     saveUninitialized: false,
     cookie: {
