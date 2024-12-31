@@ -10,10 +10,23 @@ import { Server } from "socket.io";
 import { prisma } from "./prisma";
 import router from "./routers/authRouter";
 
-const redis = new Redis();
+const redisClient = new Redis({
+  host: "127.0.0.1",
+  port: 6379,
+  reconnectOnError: (err) => {
+    console.error("Reconnect on error:", err.message);
+    return false;
+  },
+  maxRetriesPerRequest: 3,
+  retryStrategy: (times) => {
+    console.error(`[ioredis] Retry attempt #${times}`);
+    return null;
+  },
+  lazyConnect: true,
+});
 
 const redisStore = new RedisStore({
-  client: redis,
+  client: redisClient,
   prefix: "myapp:",
 });
 
@@ -64,6 +77,13 @@ app.listen(port, async () => {
   } catch (error) {
     console.error("Error connecting to the database:", error);
     process.exit(1);
+  }
+
+  try {
+    await redisClient.connect();
+    console.log("Redis connection established.");
+  } catch (error) {
+    console.error("Error connecting to Redis");
   }
 });
 
