@@ -4,26 +4,11 @@ import express from "express";
 import session from "express-session";
 import helmet from "helmet";
 import http from "http";
-import { Redis } from "ioredis";
 import { Server } from "socket.io";
 
 import { prisma } from "./prisma";
+import { redisClient } from "./redis";
 import router from "./routers/authRouter";
-
-const redisClient = new Redis({
-  host: "127.0.0.1",
-  port: 6379,
-  reconnectOnError: (err) => {
-    console.error("Reconnect on error:", err.message);
-    return false;
-  },
-  maxRetriesPerRequest: 3,
-  retryStrategy: (times) => {
-    console.error(`[ioredis] Retry attempt #${times}`);
-    return null;
-  },
-  lazyConnect: true,
-});
 
 const redisStore = new RedisStore({
   client: redisClient,

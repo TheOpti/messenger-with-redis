@@ -6,6 +6,7 @@ import {
   handleLogin,
   handleLogout,
 } from "../controllers/authController";
+import { rateLimiter } from "../middleware/rateLimiter";
 import {
   validateLoginForm,
   validateRegisterForm,
@@ -13,9 +14,15 @@ import {
 
 const router = express.Router();
 
-router.route("/login").get(handleLogin).post(validateLoginForm, attemptLogin);
+router
+  .route("/login")
+  .get(rateLimiter, handleLogin)
+  .post(validateLoginForm, rateLimiter, attemptLogin);
+
 router.get("/logout", handleLogout);
 
-router.route("/register").post(validateRegisterForm, attemptRegister);
+router
+  .route("/register")
+  .post(validateRegisterForm, rateLimiter, attemptRegister);
 
 export default router;
