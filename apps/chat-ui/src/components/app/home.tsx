@@ -1,10 +1,11 @@
-import { LogoutButton } from "./logoutButton";
+import { Chat } from "./chat";
+import { Sidebar } from "./sidebar";
 
 export const Home = () => {
   return (
-    <div>
-      <LogoutButton />
-      <div>Hello, welcome home</div>
+    <div className="flex h-full flex-1">
+      <Sidebar />
+      <Chat />
     </div>
   );
 };

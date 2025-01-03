@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { redisClient } from "../redis";
 
-const LIMIT = 10;
+const LIMIT = 25;
 const WINDOW = 60;
 
 export const rateLimiter = async (
