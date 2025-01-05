@@ -58,9 +58,7 @@ export const Login = () => {
         return;
       }
 
-      console.debug("Everything was fine.");
       form.reset();
-
       const parsedResp = await res.json();
       setUser({ ...parsedResp });
 

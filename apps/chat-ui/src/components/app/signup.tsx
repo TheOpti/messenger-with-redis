@@ -50,7 +50,6 @@ export const Signup = () => {
       if (!res || !res.ok || res.status >= 400) {
         const parsedResp = await res.json();
         console.debug("There was a problem with the response");
-        console.debug(parsedResp);
         form.setError(
           "username",
           { message: parsedResp.message },
@@ -60,7 +59,6 @@ export const Signup = () => {
         return;
       }
 
-      console.debug("Everything was fine.");
       form.reset();
       navigate("/home");
       setUser({ loggedIn: true });
