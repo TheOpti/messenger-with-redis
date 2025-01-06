@@ -1,5 +1,6 @@
 import bcryptjs from "bcryptjs";
 import { Request, Response } from "express";
+import { v4 as uuidv4 } from "uuid";
 
 import { prisma } from "../prisma";
 
@@ -46,6 +47,7 @@ export const attemptLogin = async (req: Request, res: Response) => {
       req.session.user = {
         username: req.body.username,
         id: user.id,
+        userid: user.userid,
       };
 
       res.status(200).json({
@@ -88,12 +90,13 @@ export const attemptRegister = async (req: Request, res: Response) => {
 
     const passhash = await bcryptjs.hash(password, 10);
     const createResult = await prisma.user.create({
-      data: { username, passhash },
+      data: { username, passhash, userid: uuidv4() },
     });
 
     req.session.user = {
       username: req.body.username,
       id: createResult.id,
+      userid: createResult.userid,
     };
 
     res.status(200).json({

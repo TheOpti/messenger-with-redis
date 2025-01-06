@@ -8,7 +8,7 @@ export const rateLimiter = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   const ip = req.ip || "unknown";
 
   try {
@@ -16,15 +16,18 @@ export const rateLimiter = async (
 
     if (!resp) {
       console.error("Redis transaction aborted or returned null.");
-      return res.status(500).json({ message: "Internal server error." });
+      res.status(500).json({ message: "Internal server error." });
+      return;
     }
 
     const requestCount = resp[0][1] as number;
 
     if (requestCount > LIMIT) {
-      return res
+      res
         .status(429)
         .json({ message: "Too many requests. Please try again later." });
+
+      return;
     }
 
     next();

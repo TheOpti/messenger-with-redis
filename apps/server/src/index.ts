@@ -32,6 +32,8 @@ const io = new Server(server, {
 
 io.engine.use(sessionMiddleware);
 io.on("connect", (socket) => {
+  console.log("Socket user: ", socket?.user);
+  console.log("Session id: ", socket.id);
   console.log("Socket session: ", socket.request.session?.user?.username);
 });
 

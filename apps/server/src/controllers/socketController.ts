@@ -1,4 +1,5 @@
 import { Socket } from "socket.io";
+import { redisClient } from "../redis";
 
 export const authorizeUser = (socket: Socket, next: (err?: Error) => void) => {
   if (!socket.request?.session?.user) {
@@ -7,6 +8,14 @@ export const authorizeUser = (socket: Socket, next: (err?: Error) => void) => {
 
     return;
   }
+
+  socket.user = { ...socket.request.session.user };
+
+  redisClient.hset(
+    `userid:${socket.user.username}`,
+    "userid",
+    socket.user.userid
+  );
 
   next();
 };
