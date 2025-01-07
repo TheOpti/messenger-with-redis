@@ -7,12 +7,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { FriendsContext } from "@/providers/FriendsProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
-import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { socket } from "../../socket";
 import {
   Form,
   FormControl,
@@ -37,8 +36,6 @@ export const addFriendSchema = z.object({
 export function AddFriendModal(props: Props) {
   const { open, setOpen } = props;
 
-  const { friendsList, setFriendsList } = useContext(FriendsContext);
-
   const form = useForm<z.infer<typeof addFriendSchema>>({
     resolver: zodResolver(addFriendSchema),
     defaultValues: {
@@ -47,14 +44,22 @@ export function AddFriendModal(props: Props) {
   });
 
   const onSubmit = (values: z.infer<typeof addFriendSchema>) => {
-    setFriendsList([
-      ...friendsList,
-      {
-        name: values.friendsName,
-        connected: false,
-      },
-    ]);
-    setOpen(false);
+    socket.emit(
+      "add_friend",
+      values.friendsName,
+      ({ errorMessage, done }: { errorMessage: string; done: boolean }) => {
+        if (done) {
+          setOpen(false);
+          return;
+        }
+
+        form.setError(
+          "friendsName",
+          { message: errorMessage },
+          { shouldFocus: true }
+        );
+      }
+    );
   };
 
   return (

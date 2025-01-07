@@ -19,3 +19,11 @@ export const authorizeUser = (socket: Socket, next: (err?: Error) => void) => {
 
   next();
 };
+
+export const addFriend = (
+  friendsName: string,
+  callback: (args: any) => void
+) => {
+  console.debug("Inside addFriend method. friendsName: ", friendsName);
+  callback({ done: true });
+};
