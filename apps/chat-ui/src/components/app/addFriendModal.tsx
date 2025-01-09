@@ -7,8 +7,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Friend, FriendsContext } from "@/providers/FriendsProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { socket } from "../../socket";
@@ -28,13 +30,15 @@ interface Props {
 
 export const addFriendSchema = z.object({
   friendsName: z
-    .string({ required_error: "Add friend is required" })
+    .string({ required_error: "Friends name is required" })
     .min(3, { message: "Name must be at least 3 characters long" })
     .max(20, { message: "Name must be 20 characters or less" }),
 });
 
 export function AddFriendModal(props: Props) {
   const { open, setOpen } = props;
+
+  const { friendsList, setFriendsList } = useContext(FriendsContext);
 
   const form = useForm<z.infer<typeof addFriendSchema>>({
     resolver: zodResolver(addFriendSchema),
@@ -47,8 +51,17 @@ export function AddFriendModal(props: Props) {
     socket.emit(
       "add_friend",
       values.friendsName,
-      ({ errorMessage, done }: { errorMessage: string; done: boolean }) => {
+      ({
+        errorMessage,
+        done,
+        newFriend,
+      }: {
+        errorMessage: string;
+        done: boolean;
+        newFriend: Friend;
+      }) => {
         if (done) {
+          setFriendsList([newFriend, ...friendsList]);
           setOpen(false);
           return;
         }

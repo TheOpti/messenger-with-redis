@@ -5,7 +5,12 @@ import http from "http";
 import { Server } from "socket.io";
 
 import { sessionMiddleware } from "./controllers/serverController";
-import { addFriend, authorizeUser } from "./controllers/socketController";
+import {
+  addFriend,
+  authorizeUser,
+  initializeUser,
+  onDisconnect,
+} from "./controllers/socketController";
 import { prisma } from "./prisma";
 import { redisClient } from "./redis";
 import router from "./routers/authRouter";
@@ -32,7 +37,13 @@ const io = new Server(server, {
 
 io.engine.use(sessionMiddleware);
 io.on("connect", (socket) => {
-  socket.on("add_friend", addFriend);
+  initializeUser(socket);
+
+  socket.on("add_friend", (friendsName, callback) =>
+    addFriend(socket, friendsName, callback)
+  );
+
+  socket.on("disconnecting", () => onDisconnect(socket));
 });
 
 io.use(authorizeUser);

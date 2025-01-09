@@ -15,7 +15,6 @@
     "skipLibCheck": true, // Skip library checks to speed up builds
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*"], // Include all TypeScript files in the `src` folder
-  "exclude": ["node_modules"], // Exclude `node_modules` from compilation
-  "typeRoots": ["src/types/index.ts", "./node_modules/@types"]
+  "include": ["types/**/*", "src/**/*"], // Include all TypeScript files in the `src` folder
+  "exclude": ["node_modules"] // Exclude `node_modules` from compilation
 }

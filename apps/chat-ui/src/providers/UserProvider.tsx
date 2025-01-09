@@ -9,10 +9,10 @@ import {
 import { useNavigate } from "react-router-dom";
 
 export const UserContext = createContext<{
-  user: { loggedIn: boolean };
+  user: { loggedIn: boolean; username: string };
   setUser: Dispatch<SetStateAction<{ loggedIn: boolean }>>;
 }>({
-  user: { loggedIn: false },
+  user: { loggedIn: false, username: "" },
   setUser: () => {},
 });
 

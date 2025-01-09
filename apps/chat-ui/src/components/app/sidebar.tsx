@@ -30,11 +30,14 @@ export const Sidebar = () => {
           )}
 
           {friendsList.map((friend) => (
-            <div className="flex items-center gap-2 hover:bg-muted/50 rounded-lg p-3 transition-colors cursor-pointer">
+            <div
+              className="flex items-center gap-2 hover:bg-muted/50 rounded-lg p-3 transition-colors cursor-pointer"
+              key={friend.userid}
+            >
               <Avatar className="w-8 h-8">
                 <AvatarImage src="/placeholder-user.jpg" alt="@shadcn" />
                 <AvatarFallback className="text-xs font-bold">
-                  {friend.name
+                  {friend.username
                     .trim()
                     .split(/\s+/)
                     .map((word: string) => word[0].toUpperCase())
@@ -43,9 +46,9 @@ export const Sidebar = () => {
               </Avatar>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
-                  <div className="font-medium truncate">{friend.name}</div>
+                  <div className="font-medium truncate">{friend.username}</div>
                   <span
-                    className={`h-3 w-3 rounded-full mr-2 ${friend.connected ? "bg-green-500" : "bg-red-500"}`}
+                    className={`h-3 w-3 rounded-full mr-2 ${friend.connected === "1" ? "bg-green-500" : "bg-red-500"}`}
                   ></span>
                 </div>
               </div>

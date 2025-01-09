@@ -1,3 +1,4 @@
+import { FriendsProvider } from "@/providers/FriendsProvider";
 import { Route, Routes } from "react-router-dom";
 import { Home } from "./home";
 import { Login } from "./login";
@@ -10,7 +11,14 @@ export const Views = () => {
       <Route path="/" element={<Login />} />
       <Route path="/register" element={<Signup />} />
       <Route element={<PrivateRoutes />}>
-        <Route path="/home" element={<Home />} />
+        <Route
+          path="/home"
+          element={
+            <FriendsProvider>
+              <Home />
+            </FriendsProvider>
+          }
+        />
       </Route>
       <Route path="*" element={<Login />} />
     </Routes>

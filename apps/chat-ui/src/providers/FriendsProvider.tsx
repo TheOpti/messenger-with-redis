@@ -6,16 +6,22 @@ import {
   useState,
 } from "react";
 
+export type Friend = {
+  username: string;
+  userid: string;
+  connected: string;
+};
+
 export const FriendsContext = createContext<{
-  friendsList: any[];
-  setFriendsList: Dispatch<SetStateAction<any>>;
+  friendsList: Friend[];
+  setFriendsList: Dispatch<SetStateAction<Friend[]>>;
 }>({
   friendsList: [],
   setFriendsList: () => {},
 });
 
 export const FriendsProvider = ({ children }: { children: ReactNode }) => {
-  const [friendsList, setFriendsList] = useState([]);
+  const [friendsList, setFriendsList] = useState<Friend[]>([]);
 
   return (
     <FriendsContext.Provider value={{ friendsList, setFriendsList }}>

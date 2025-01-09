@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { UserContext } from "@/providers/UserProvider";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { socket } from "../../socket";
 
 export const LogoutButton = () => {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ export const LogoutButton = () => {
       return;
     }
 
+    socket.disconnect();
     setUser({ loggedIn: false });
     navigate("/");
   };
