@@ -60,8 +60,10 @@ export const Signup = () => {
       }
 
       form.reset();
+      const parsedResp = await res.json();
+      setUser({ ...parsedResp });
+
       navigate("/home");
-      setUser({ loggedIn: true });
     } catch (e) {
       console.debug("There was an error during the request: ", e);
     }

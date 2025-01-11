@@ -1,21 +1,45 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Friend } from "@/providers/FriendsProvider";
+import { Chatbox } from "./chatbox";
 
-export const Chat = () => {
+interface Props {
+  activeFriend?: Friend;
+}
+
+export const Chat = (props: Props) => {
+  const { activeFriend } = props;
+
+  if (!activeFriend) {
+    return (
+      <div className="flex flex-col flex-1 justify-center">
+        <header className="flex items-center justify-between px-4 py-2 border-b h-16">
+          <h1 className="font-semibold"></h1>
+        </header>
+        <main className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col justify-center text-center">
+          <h2>Select a user to start chatting!</h2>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col flex-1">
       <header className="flex items-center justify-between px-4 py-2 border-b h-16">
-        <h1 className="font-semibold">Chat Room</h1>
+        <h1 className="font-semibold">
+          Messages from {activeFriend?.username}
+        </h1>
       </header>
-      <main className="flex-1 overflow-y-auto p-4 space-y-4">
+      <main className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col justify-end">
         <div className="flex items-end space-x-2">
           <Avatar>
             <AvatarImage src="/placeholder-user.jpg" alt="User Avatar" />
             <AvatarFallback>U</AvatarFallback>
           </Avatar>
-          <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
-            <p className="text-sm">Hello everyone!</p>
+          <div className="flex flex-col">
+            <div className="opacity-50 text-xs py-1">name of the user</div>
+            <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
+              <p className="text-sm">Hello everyone!</p>
+            </div>
           </div>
         </div>
         <div className="flex items-end space-x-2">
@@ -48,12 +72,7 @@ export const Chat = () => {
           </Avatar>
         </div>
       </main>
-      <footer className="flex items-center space-x-2 p-4 border-t">
-        <Input className="flex-1" placeholder="Type a message" />
-        <Button variant="outline" size="sm">
-          Send
-        </Button>
-      </footer>
+      <Chatbox friendId={activeFriend.userid} />
     </div>
   );
 };

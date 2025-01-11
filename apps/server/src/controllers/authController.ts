@@ -6,11 +6,19 @@ import { prisma } from "../prisma";
 
 export const handleLogin = async (req: Request, res: Response) => {
   if (req.session.user?.username) {
-    res.json({ loggedIn: true, username: req.session.user.username });
+    res.json({
+      loggedIn: true,
+      username: req.session.user?.username,
+      userid: req.session.user?.userid,
+    });
     return;
   }
 
-  res.json({ loggedIn: false });
+  res.json({
+    loggedIn: false,
+    username: "",
+    userid: "",
+  });
 };
 
 export const handleLogout = (req: Request, res: Response) => {
@@ -102,6 +110,7 @@ export const attemptRegister = async (req: Request, res: Response) => {
     res.status(200).json({
       loggedIn: true,
       username: req.body.username,
+      userid: createResult.userid,
     });
   } catch (err) {
     res.status(400).json({

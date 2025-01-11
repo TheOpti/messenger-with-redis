@@ -1,13 +1,18 @@
-import { FriendsContext } from "@/providers/FriendsProvider";
+import { Friend, FriendsContext } from "@/providers/FriendsProvider";
 import { UserPlus } from "lucide-react";
-import { useContext, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { AddFriendModal } from "./addFriendModal";
 
-export const Sidebar = () => {
-  const [modalOpen, setModalOpen] = useState(false);
+interface Props {
+  activeFriend?: Friend;
+  setActiveFriend: Dispatch<SetStateAction<Friend | undefined>>;
+}
 
+export const Sidebar = (props: Props) => {
+  const { activeFriend, setActiveFriend } = props;
+  const [modalOpen, setModalOpen] = useState(false);
   const { friendsList } = useContext(FriendsContext);
 
   return (
@@ -31,8 +36,9 @@ export const Sidebar = () => {
 
           {friendsList.map((friend) => (
             <div
-              className="flex items-center gap-2 hover:bg-muted/50 rounded-lg p-3 transition-colors cursor-pointer"
+              className={`flex items-center gap-2 rounded-lg p-3 transition-colors cursor-pointer hover:bg-muted/50 ${activeFriend?.userid === friend.userid ? "bg-muted/50" : ""}`}
               key={friend.userid}
+              onClick={() => setActiveFriend(friend)}
             >
               <Avatar className="w-8 h-8">
                 <AvatarImage src="/placeholder-user.jpg" alt="@shadcn" />

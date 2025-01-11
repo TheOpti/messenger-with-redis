@@ -8,17 +8,23 @@ import {
 } from "react";
 import { useNavigate } from "react-router-dom";
 
+export type User = { loggedIn: boolean; username: string; userid: string };
+
 export const UserContext = createContext<{
-  user: { loggedIn: boolean; username: string };
-  setUser: Dispatch<SetStateAction<{ loggedIn: boolean }>>;
+  user: User;
+  setUser: Dispatch<SetStateAction<User>>;
 }>({
-  user: { loggedIn: false, username: "" },
+  user: { loggedIn: false, username: "", userid: "" },
   setUser: () => {},
 });
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
-  const [user, setUser] = useState({ loggedIn: false });
+  const [user, setUser] = useState({
+    loggedIn: false,
+    username: "",
+    userid: "",
+  });
 
   useEffect(() => {
     fetch("http://localhost:3000/auth/login", {
@@ -26,7 +32,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     })
       .then(async (resp) => {
         if (!resp.ok || resp.status >= 400) {
-          setUser({ loggedIn: false });
+          setUser({ loggedIn: false, username: "", userid: "" });
           return;
         }
 
@@ -35,7 +41,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         navigate("/home");
       })
       .catch(() => {
-        setUser({ loggedIn: false });
+        setUser({ loggedIn: false, username: "", userid: "" });
       });
   }, []);
 

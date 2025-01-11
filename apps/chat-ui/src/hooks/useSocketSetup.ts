@@ -6,17 +6,13 @@ export const useSocketSetup = () => {
   const { setFriendsList } = useContext(FriendsContext);
 
   useEffect(() => {
-    console.debug("Attempting to connect to websocket...");
-
     socket.connect();
 
     socket.on("friends", (friendsList) => {
-      console.debug("!!! socket.on friends ", friendsList);
       setFriendsList(friendsList);
     });
 
     socket.on("connected", (status, username) => {
-      console.debug("!!! socket.on connected ", status, username);
       setFriendsList((prevFriends) =>
         [...prevFriends].map((friend) => {
           if (friend.username === username) {
@@ -28,6 +24,14 @@ export const useSocketSetup = () => {
       );
     });
 
+    socket.on("messages", (data) => {
+      console.debug("socket.on messages, data ", data);
+    });
+
+    socket.on("message_added", (data) => {
+      console.debug("socket.on message_added, data ", data);
+    });
+
     socket.on("connect_error", () => {
       console.debug("Websocket connection error");
     });
@@ -35,6 +39,8 @@ export const useSocketSetup = () => {
     return () => {
       socket.off("friends");
       socket.off("connected");
+      socket.off("messages");
+      socket.off("message_added");
       socket.off("connection_error");
     };
   }, []);

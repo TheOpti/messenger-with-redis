@@ -7,6 +7,7 @@ import { Server } from "socket.io";
 import { sessionMiddleware } from "./controllers/serverController";
 import {
   addFriend,
+  addMessage,
   authorizeUser,
   initializeUser,
   onDisconnect,
@@ -42,6 +43,8 @@ io.on("connect", (socket) => {
   socket.on("add_friend", (friendsName, callback) =>
     addFriend(socket, friendsName, callback)
   );
+
+  socket.on("add_message", (message) => addMessage(socket, message));
 
   socket.on("disconnecting", () => onDisconnect(socket));
 });
