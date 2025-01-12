@@ -19,10 +19,6 @@ export const Chatbox = (props: Props) => {
   }, [friendId]);
 
   const sendMessage = () => {
-    console.debug("sendMessage ---");
-    console.debug("friendId", friendId);
-    console.debug("user.userid", user.userid);
-
     const message = {
       to: friendId,
       from: user.userid,
@@ -34,7 +30,7 @@ export const Chatbox = (props: Props) => {
   };
 
   return (
-    <footer className="flex items-center space-x-2 p-4 border-t">
+    <footer className="flex items-center space-x-2 p-4 border-t h-16">
       <Input
         className="flex-1"
         placeholder="Type a message"

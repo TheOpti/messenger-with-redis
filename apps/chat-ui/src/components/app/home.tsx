@@ -10,7 +10,7 @@ export const Home = () => {
   useSocketSetup();
 
   return (
-    <div className="flex h-full flex-1">
+    <div className="flex flex-1" style={{ height: "calc(100% - 4rem)" }}>
       <Sidebar activeFriend={activeFriend} setActiveFriend={setActiveFriend} />
       <Chat activeFriend={activeFriend} />
     </div>

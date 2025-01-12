@@ -1,5 +1,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Friend } from "@/providers/FriendsProvider";
+import { MessageContext } from "@/providers/MessageProvider";
+import { UserContext } from "@/providers/UserProvider";
+import { useContext } from "react";
 import { Chatbox } from "./chatbox";
 
 interface Props {
@@ -8,6 +11,9 @@ interface Props {
 
 export const Chat = (props: Props) => {
   const { activeFriend } = props;
+
+  const { messages } = useContext(MessageContext);
+  const { user } = useContext(UserContext);
 
   if (!activeFriend) {
     return (
@@ -22,6 +28,47 @@ export const Chat = (props: Props) => {
     );
   }
 
+  const displayUserAbbreviation = (name: string) => {
+    return name
+      .trim()
+      .split(/\s+/)
+      .map((word: string) => word[0].toUpperCase())
+      .join("");
+  };
+
+  const displayMsgAuthor = ({
+    idx,
+    addressedToMe,
+  }: {
+    idx: number;
+    addressedToMe: boolean;
+  }) => {
+    if (idx === 0) {
+      return (
+        <div className="opacity-50 text-xs py-1">
+          {addressedToMe ? activeFriend.username : user.username}
+        </div>
+      );
+    }
+
+    const isAuthorDifferent =
+      filteredMessages[idx - 1]?.from !== filteredMessages[idx]?.from;
+
+    if (isAuthorDifferent) {
+      return (
+        <div className="opacity-50 text-xs py-1">
+          {addressedToMe ? activeFriend.username : user.username}
+        </div>
+      );
+    }
+  };
+
+  const filteredMessages = messages
+    .filter((msg) => {
+      return msg.to === activeFriend.userid || msg.from === activeFriend.userid;
+    })
+    .sort((a, b) => a.timestamp - b.timestamp);
+
   return (
     <div className="flex flex-col flex-1">
       <header className="flex items-center justify-between px-4 py-2 border-b h-16">
@@ -29,48 +76,40 @@ export const Chat = (props: Props) => {
           Messages from {activeFriend?.username}
         </h1>
       </header>
-      <main className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col justify-end">
-        <div className="flex items-end space-x-2">
-          <Avatar>
-            <AvatarImage src="/placeholder-user.jpg" alt="User Avatar" />
-            <AvatarFallback>U</AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col">
-            <div className="opacity-50 text-xs py-1">name of the user</div>
-            <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
-              <p className="text-sm">Hello everyone!</p>
+      <main className="flex-1 overflow-y-auto p-4 space-y-4">
+        {filteredMessages.map((msg, idx) => {
+          const addressedToMe = msg.to === user.userid;
+
+          return (
+            <div
+              className={`flex items-end space-x-2 ${addressedToMe ? "" : "justify-end"}  `}
+              key={msg.id}
+            >
+              <Avatar className="w-8 h-8">
+                <AvatarImage
+                  src="/placeholder-user.jpg"
+                  alt={addressedToMe ? activeFriend.username : user.username}
+                />
+                <AvatarFallback>
+                  {displayUserAbbreviation(
+                    addressedToMe ? activeFriend.username : user.username
+                  )}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col">
+                {displayMsgAuthor({
+                  idx,
+                  addressedToMe,
+                })}
+                <div
+                  className={`p-2 rounded-lg ${addressedToMe ? "bg-gray-100 dark:bg-gray-800" : "bg-blue-500 text-white"}`}
+                >
+                  <p className="text-sm">{msg.content}</p>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className="flex items-end space-x-2">
-          <Avatar>
-            <AvatarImage src="/placeholder-user.jpg" alt="User Avatar" />
-            <AvatarFallback>U</AvatarFallback>
-          </Avatar>
-          <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
-            <p className="text-sm">How's it going?</p>
-          </div>
-        </div>
-        <div className="flex items-end justify-end space-x-2">
-          <div className="p-2 rounded-lg bg-blue-500 text-white">
-            <p className="text-sm">
-              Hello! It's going well, thanks for asking.
-            </p>
-          </div>
-          <Avatar>
-            <AvatarImage src="/placeholder-user.jpg" alt="User Avatar" />
-            <AvatarFallback>U</AvatarFallback>
-          </Avatar>
-        </div>
-        <div className="flex items-end justify-end space-x-2">
-          <div className="p-2 rounded-lg bg-blue-500 text-white">
-            <p className="text-sm">What about you?</p>
-          </div>
-          <Avatar>
-            <AvatarImage src="/placeholder-user.jpg" alt="User Avatar" />
-            <AvatarFallback>U</AvatarFallback>
-          </Avatar>
-        </div>
+          );
+        })}
       </main>
       <Chatbox friendId={activeFriend.userid} />
     </div>

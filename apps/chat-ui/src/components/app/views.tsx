@@ -1,4 +1,5 @@
 import { FriendsProvider } from "@/providers/FriendsProvider";
+import { MessageProvider } from "@/providers/MessageProvider";
 import { Route, Routes } from "react-router-dom";
 import { Home } from "./home";
 import { Login } from "./login";
@@ -15,7 +16,9 @@ export const Views = () => {
           path="/home"
           element={
             <FriendsProvider>
-              <Home />
+              <MessageProvider>
+                <Home />
+              </MessageProvider>
             </FriendsProvider>
           }
         />

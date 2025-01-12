@@ -61,6 +61,7 @@ export const attemptLogin = async (req: Request, res: Response) => {
       res.status(200).json({
         loggedIn: true,
         username: req.body.username,
+        userid: req.session.user?.userid,
       });
 
       return;

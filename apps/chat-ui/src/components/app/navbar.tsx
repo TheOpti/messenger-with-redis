@@ -7,7 +7,7 @@ export const Navbar = () => {
   const { user } = useContext(UserContext);
 
   return (
-    <div className="p-4 pb-2 flex justify-between items-center border-b">
+    <div className="p-4 h-16 flex justify-between items-center border-b">
       <h1 className="text-lg">Hello in Messenger with Redis app!</h1>
       {user?.loggedIn && (
         <div>

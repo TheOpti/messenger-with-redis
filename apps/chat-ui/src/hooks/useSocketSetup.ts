@@ -1,9 +1,11 @@
 import { FriendsContext } from "@/providers/FriendsProvider";
+import { MessageContext } from "@/providers/MessageProvider";
 import { useContext, useEffect } from "react";
 import { socket } from "../socket";
 
 export const useSocketSetup = () => {
   const { setFriendsList } = useContext(FriendsContext);
+  const { setMessages } = useContext(MessageContext);
 
   useEffect(() => {
     socket.connect();
@@ -24,12 +26,12 @@ export const useSocketSetup = () => {
       );
     });
 
-    socket.on("messages", (data) => {
-      console.debug("socket.on messages, data ", data);
+    socket.on("messages", (allMessages) => {
+      setMessages(allMessages);
     });
 
-    socket.on("message_added", (data) => {
-      console.debug("socket.on message_added, data ", data);
+    socket.on("message_added", (newMessage) => {
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
     });
 
     socket.on("connect_error", () => {

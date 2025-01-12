@@ -182,6 +182,5 @@ export const addMessage = async (socket: Socket, message: Message) => {
     Docs: https://socket.io/docs/v3/rooms/?utm_source=chatgpt.com
   */
   socket.emit("message_added", messageToSave);
-  //
   socket.to(message.to).emit("message_added", messageToSave);
 };
