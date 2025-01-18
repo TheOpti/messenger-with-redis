@@ -7,9 +7,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 import { UserContext } from "@/providers/UserProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema } from "@repo/shared/schema";
+import { CheckCircle } from "lucide-react";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -26,6 +28,7 @@ import {
 export const Signup = () => {
   const navigate = useNavigate();
   const { setUser } = useContext(UserContext);
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
@@ -64,6 +67,11 @@ export const Signup = () => {
       setUser({ ...parsedResp });
 
       navigate("/home");
+      toast({
+        title: "Account created",
+        description: "You can now use the application!",
+        action: <CheckCircle className="text-green-500 w-5 h-5" />,
+      });
     } catch (e) {
       console.debug("There was an error during the request: ", e);
     }

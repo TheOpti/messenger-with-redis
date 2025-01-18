@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import { UserContext } from "@/providers/UserProvider";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +8,7 @@ import { socket } from "../../socket";
 export const LogoutButton = () => {
   const navigate = useNavigate();
   const { setUser } = useContext(UserContext);
+  const { toast } = useToast();
 
   const logout = async () => {
     const res = await fetch("http://localhost:3000/auth/logout", {
@@ -19,8 +21,11 @@ export const LogoutButton = () => {
     }
 
     socket.disconnect();
-    setUser({ loggedIn: false });
+    setUser({ loggedIn: false, userid: "", username: "" });
     navigate("/");
+    toast({
+      title: "You logged off",
+    });
   };
 
   return (

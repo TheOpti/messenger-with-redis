@@ -7,6 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 import { Friend, FriendsContext } from "@/providers/FriendsProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
@@ -39,6 +40,7 @@ export function AddFriendModal(props: Props) {
   const { open, setOpen } = props;
 
   const { friendsList, setFriendsList } = useContext(FriendsContext);
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof addFriendSchema>>({
     resolver: zodResolver(addFriendSchema),
@@ -63,6 +65,10 @@ export function AddFriendModal(props: Props) {
         if (done) {
           setFriendsList([newFriend, ...friendsList]);
           setOpen(false);
+          toast({
+            title: "Friend added",
+            description: "You can now chat with each other.",
+          });
           return;
         }
 
