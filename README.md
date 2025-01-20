@@ -1,81 +1,61 @@
-# Turborepo starter
+# Messenger with Redis
 
-This is an official starter Turborepo.
+This project is a real-time messaging application built using React, Node.js, Redis, and Socket.IO. It allows users to communicate instantly, leveraging Redis for efficient data storage and Socket.IO for real-time bidirectional event-based communication.
 
-## Using this example
+## Features
 
-Run the following command:
+- Real-time Messaging: Facilitates instant communication between users.
+- Redis Integration: Utilizes Redis for fast and reliable data storage.
+- Socket.IO: Implements real-time, bidirectional communication between clients and servers.
 
-```sh
-npx create-turbo@latest
-```
+## Prerequisites
 
-## What's inside?
+Before running the application, ensure you have the following installed:
 
-This Turborepo includes the following packages/apps:
+- Node.js (version 18 or higher)
+- Redis
 
-### Apps and Packages
+## Installation
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
+1. Clone the repository and install dependencies
 
 ```
-cd my-turborepo
-pnpm build
+git clone https://github.com/TheOpti/messenger-with-redis.git
 ```
 
-### Develop
-
-To develop all apps and packages, run the following command:
-
 ```
-cd my-turborepo
-pnpm dev
+cd messenger-with-redis/
 ```
 
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
 ```
-cd my-turborepo
-npx turbo login
+npm install
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+2. Install Redis
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+Ensure that your Redis server is running locally on the default port (6379). If your Redis configuration differs, update the connection settings in the project's configuration files accordingly.
+
+3. Install PostgreSQL
+
+Additionally, install PostgreSQL and create a database for the application.
+
+You can do this using the following commands:
 
 ```
-npx turbo link
+sudo -u postgres psql
+CREATE DATABASE messenger;
 ```
 
-## Useful Links
+Once the database is created, configure Prisma by running:
 
-Learn more about the power of Turborepo:
+```
+npx prisma migrate dev --name init
+```
 
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+## Running the application
+
+Once everything is setup, run the app using following command:
+
+```
+npm run dev
+```
